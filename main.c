@@ -1,9 +1,12 @@
 #include "ti_msp_dl_config.h"
 
-int main(void)
-{
-    SYSCFG_DL_init();
+#define TOG(gpio,pins) DL_GPIO_togglePins(gpio,pins)
 
-    while (1) {
-    }
+int main(void) {
+	SYSCFG_DL_init();
+
+	while (1) {
+		delay_cycles(32000000);
+		TOG(GPIOA, GPIO_GRP_0_PIN_0_PIN);
+	}
 }
