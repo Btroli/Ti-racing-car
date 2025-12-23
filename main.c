@@ -1,12 +1,19 @@
 #include "ti_msp_dl_config.h"
 
-#define TOG(gpio,pins) DL_GPIO_togglePins(gpio,pins)
+#include "AllHeader.h"
 
-int main(void) {
-	SYSCFG_DL_init();
+
+int main(void)
+{
+    SYSCFG_DL_init();
+
+	OLED_SET();
 
 	while (1) {
-		delay_cycles(32000000);
-		TOG(GPIOA, GPIO_GRP_0_PIN_0_PIN);
+		OLED_ShowChar(3,3,'A',16,1);
+		OLED_Refresh();
+
+		delay_cycles(800000000);
 	}
 }
+

@@ -24,7 +24,7 @@
                                 <listOptionValue value="CCS_MBS_VERSION=70.0.0"/>
                                 <listOptionValue value="RUNTIME_SUPPORT_LIBRARY="/>
                                 <listOptionValue value="OUTPUT_TYPE=executable"/>
-                                <listOptionValue value="PRODUCTS=MSPM0-SDK:2.8.0.04;sysconfig:1.25.0;"/>
+                                <listOptionValue value="PRODUCTS=MSPM0-SDK:2.8.0.04;sysconfig:1.24.0;"/>
                                 <listOptionValue value="PRODUCT_MACRO_IMPORTS={&quot;MSPM0-SDK&quot;:[&quot;${COM_TI_MSPM0_SDK_INCLUDE_PATH}&quot;,&quot;${COM_TI_MSPM0_SDK_LIBRARY_PATH}&quot;,&quot;${COM_TI_MSPM0_SDK_LIBRARIES}&quot;,&quot;${COM_TI_MSPM0_SDK_SYMBOLS}&quot;,&quot;${COM_TI_MSPM0_SDK_SYSCONFIG_MANIFEST}&quot;],&quot;sysconfig&quot;:[&quot;${SYSCONFIG_TOOL_INCLUDE_PATH}&quot;,&quot;${SYSCONFIG_TOOL_LIBRARY_PATH}&quot;,&quot;${SYSCONFIG_TOOL_LIBRARIES}&quot;,&quot;${SYSCONFIG_TOOL_SYMBOLS}&quot;,&quot;${SYSCONFIG_TOOL_SYSCONFIG_MANIFEST}&quot;]}"/>
                             </option>
                             <option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1942074462" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="TICLANG_4.0.3.LTS" valueType="string"/>
@@ -91,6 +91,19 @@
                             </tool>
                         </toolChain>
                     </folderInfo>
+                    <fileInfo id="com.ti.ccstudio.buildDefinitions.TMS470.Debug.261312261.main.c" name="main.c" rcbsApplicability="disable" resourcePath="main.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_4.0.exe.compilerDebug.1796298661.1507636925">
+                        <tool id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_4.0.exe.compilerDebug.1796298661.1507636925" name="Arm Compiler" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_4.0.exe.compilerDebug.1796298661">
+                            <option id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_4.0.compilerID.INCLUDE_PATH.646012628" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_4.0.compilerID.INCLUDE_PATH" valueType="includePath">
+                                <listOptionValue value="${COM_TI_MSPM0_SDK_INCLUDE_PATH}"/>
+                                <listOptionValue value="${SYSCONFIG_TOOL_INCLUDE_PATH}"/>
+                                <listOptionValue value="${PROJECT_ROOT}"/>
+                                <listOptionValue value="${PROJECT_ROOT}/${ConfigName}"/>
+                                <listOptionValue value="${COM_TI_MSPM0_SDK_INSTALL_DIR}/source/third_party/CMSIS/Core/Include"/>
+                                <listOptionValue value="${COM_TI_MSPM0_SDK_INSTALL_DIR}/source"/>
+                                <listOptionValue value="${PROJECT_ROOT}/H"/>
+                            </option>
+                        </tool>
+                    </fileInfo>
                 </configuration>
             </storageModule>
             <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
