@@ -2,18 +2,35 @@
 
 #include "AllHeader.h"
 
+int8_t i=0;
+
 
 int main(void)
 {
     SYSCFG_DL_init();
 
 	OLED_SET();
+	Init_Motor_PWM();
+	encoder_init();
+	Timer_20ms_Init();
 
 	while (1) {
-		OLED_ShowChar(3,3,'A',16,1);
+		for (uint8_t j=0;j<8;j++) {
+			if (i==j)
+				OLED_DrawBoxLine(15*j,18,10+15*j,28,1);
+			else
+				OLED_DrawBox(15*j,18,11+15*j,29,1);
+		}
+
 		OLED_Refresh();
+		OLED_ClearRF();
+
+		Motor_Run(100,100);
 
 		delay_cycles(800000000);
+
+		if (i++ == 7)
+			i = 0;
 	}
 }
 

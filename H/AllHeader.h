@@ -1,7 +1,8 @@
 #ifndef __ALLHEADER_H_
 #define __ALLHEADER_H_
 
-//#define Motor_Switch 1
+#define Motor_Switch 1
+
 #define u8  uint8_t
 #define u16 uint16_t 
 #define u32 uint32_t 
@@ -20,9 +21,9 @@
 //#include "bsp_ir.h"
 #include "oled.h"
 //
-//#include "bsp_encoder.h"
-//#include "bsp_timer.h"
-//#include "bsp_motor.h"
+#include "encoder.h"
+#include "timer.h"
+#include "motor.h"
 //
 //#include "app_motor.h"
 //#include "bsp_PID_motor.h"
