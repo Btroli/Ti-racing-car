@@ -154,6 +154,7 @@ TIMER1.timerClkPrescale   = 10;
 TIMER1.timerMode          = "PERIODIC";
 TIMER1.interrupts         = ["ZERO"];
 TIMER1.interruptPriority  = "2";
+TIMER1.timerStartTimer    = true;
 TIMER1.peripheral.$assign = "TIMG6";
 
 UART1.$name                    = "UART_0";
