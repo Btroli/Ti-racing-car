@@ -15,7 +15,7 @@ void TIMER_20ms_INST_IRQHandler(void) {
 	//20ms归零中断触发
 	if ( DL_TimerA_getPendingInterrupt(TIMER_20ms_INST) == DL_TIMER_IIDX_ZERO ) {
 		//编码器更新
-		//IRDataAnalysis();	//红外遥控
+		IRDataAnalysis();	//红外光敏
 		encoder_update();
 		//Motion_Handle(); //小车测速
 		gled_cnt++;

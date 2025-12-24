@@ -15,16 +15,16 @@
 #include "ti_msp_dl_config.h"
 
 #include "delay.h"
-//#include "usart0.h"
-//
-//#include "bsp_beep_led.h"
-//#include "bsp_ir.h"
+#include "usart0.h"
+
+#include "beep_led.h"
+#include "ir.h"
 #include "oled.h"
-//
+
 #include "encoder.h"
 #include "timer.h"
 #include "motor.h"
-//
+
 //#include "app_motor.h"
 //#include "bsp_PID_motor.h"
 //#include "app_irtracking_eight.h"
