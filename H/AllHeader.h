@@ -18,6 +18,7 @@
 #include "usart0.h"
 
 #include "beep_led.h"
+#include "RGB.h"
 #include "ir.h"
 #include "oled.h"
 
