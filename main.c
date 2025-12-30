@@ -2,7 +2,23 @@
 
 #include "AllHeader.h"
 
+#define ecd_L motorL_encoder.count
+#define ecd_R motorR_encoder.count
+
+#define oled_x 0
+#define oled_y 0
+
 int8_t i = 0;
+
+int8_t RL_flag = 0, turn_flag = 0;
+
+int16_t SPDL = 0, SPDR = 0;
+uint8_t Kp = 10, Ki = 6, Kd = 1;
+int16_t PL = 0, PR = 0, pre_PL = 0, pre_PR = 0, sum_PL = 0, sum_PR = 0;
+
+int8_t GL = 20, GR = 20;
+
+void pid0(void);
 
 int main(void) {
 	SYSCFG_DL_init();
@@ -17,27 +33,48 @@ int main(void) {
 	uart0_send_string("$0,0,1#");
 	Motor_Stop(0);
 
-	while (!ReadKEY1);
+	//while (!ReadKEY1);
 
-	for (i = 0; i < 8; i++)
-		OLED_ShowChar(3 + 15 * i, 2, '1' + i, 12, 1);
+	while (0) {
+	}
 
 	while (1) {
-		if (ir_bits & MID)
-			Motor_Run(200, 200);
-		else if (ir_bits & LEFT)
-			Motor_Run(200, 270);
-		else if (ir_bits & RIGHT)
-			Motor_Run(270, 200);
 
+		pid0();
 
+		Motor_Run(SPDL, SPDR);
 
-		for (i = 0; i < 8; i++) {
-			OLED_DrawBox(15 * i, 18, 12 + 15 * i, 30, 1);
-			if (1 ^ ir_bits >> i & 1)
-				OLED_DrawBox(15 * i + 1, 19, 11 + 15 * i, 29, 0);
-		}
+		OLED_ShowString(oled_y, oled_x, "ecd_L", 12, 1);
+		OLED_ShowNum(oled_y, oled_x + 10, ecd_L, 3, 12, 1);
+		OLED_ShowString(oled_y + 40, oled_x, "ecd_R", 12, 1);
+		OLED_ShowNum(oled_y + 40, oled_x + 10, ecd_R, 3, 12, 1);
+		OLED_ShowNum(oled_y, oled_x + 20, SPDL, 3, 12, 1);
+		OLED_ShowNum(oled_y + 40, oled_x + 20, SPDR, 3, 12, 1);
 		OLED_Refresh();
-		delay_cycles(800000);
+		//delay_cycles(800000);
+		//delay_cycles(8000000);	//100ms
+		delay_cycles(80000);
 	}
+}
+
+void pid0(void) {
+	pre_PL = PL;
+	pre_PR = PR;
+	PL = GL - ecd_L;
+	PR = GR - ecd_R;
+
+	sum_PL += PL;
+	sum_PR += PR;
+
+	SPDL = Kp * PL + Ki * sum_PL - Kd * (PL - pre_PL);
+	SPDR = Kp * PR + Ki * sum_PR - Kd * (PR - pre_PR);
+
+	if (SPDL > 400)
+		SPDL = 400;
+	if (SPDL < -400)
+		SPDL = -400;
+	if (SPDR > 400)
+		SPDR = 400;
+	if (SPDR < -400)
+		SPDR = -400;
 }

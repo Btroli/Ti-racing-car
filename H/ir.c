@@ -96,29 +96,13 @@ void IRDataAnalysis(void) {
 			//	}
 
 			//优化1
-			//for (char *p = &temp[2]; *p != '#'; ++p)
-			//	if (*p == 'x' && p[1] >= '1' && p[1] <= '8') {
-			//		uint8_t pos = p[1] - '1';
-			//		if (p[2] == ':' && (p[3] == '0' || p[3] == '1'))
-			//			bits |= (uint8_t)(p[3] - '0') << pos;
-			//	}
+			for (char *p = &temp[2]; *p != '#'; ++p)
+				if (*p == 'x' && p[1] >= '1' && p[1] <= '8') {
+					uint8_t pos = p[1] - '1';
+					if (p[2] == ':' && (p[3] == '0' || p[3] == '1'))
+						bits |= (uint8_t)(p[3] - '0') << pos;
+				}
 
-			//下方终极优化
-			const char *p = &temp[2];          /* 从 "$D" 之后开始 */
-
-			/* 滑窗直到 '#'，每次把当前位置同时比对 8 路 */
-			while (*p != '#') {
-				/* 一次加载 8 路模板，编译器会合并成 2~3 条 32-bit 立即数比对 */
-#define CHK_N(n)  \
-			if (*p=='x' && p[1]=='0'+n && p[2]==':' && (p[3]=='0'||p[3]=='1')) \
-			    bits |= (uint8_t)(p[3]-'0') << (n-1);
-
-				CHK_N(1) CHK_N(2) CHK_N(3) CHK_N(4)
-				CHK_N(5) CHK_N(6) CHK_N(7) CHK_N(8)
-#undef CHK_N
-
-				++p;        /* 滑窗 1 字符继续找下一个字段 */
-			}
 #if LINE
 			ir_bits = ~bits;
 #else
