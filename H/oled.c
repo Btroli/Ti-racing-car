@@ -399,15 +399,15 @@ void OLED_DrawBox(u8 x0, u8 y0, u8 x1, u8 y1, u8 mode) {
 	}
 }
 
-void OLED_DrawLineX(u8 x, u8 mode) {
+void OLED_DrawLineY(u8 x, u8 mode) {
 	u8 y;
-	for (y = 0; y < 128; y++)
+	for (y = 0; y < 32; y++)
 		OLED_DrawPoint(x, y, mode);
 }
 
-void OLED_DrawLineY(u8 y, u8 mode) {
+void OLED_DrawLineX(u8 y, u8 mode) {
 	u8 x;
-	for (x = 0; x < 32; x++)
+	for (x = 0; x < 128; x++)
 		OLED_DrawPoint(x, y, mode);
 }
 
@@ -648,4 +648,6 @@ void OLED_SET(void) {
 
 
 	OLED_WR_Byte(0xAF, OLED_CMD);	//开启显示 Display ON
+
+	OLED_Clear();
 }

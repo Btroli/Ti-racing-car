@@ -119,8 +119,11 @@ void IRDataAnalysis(void) {
 
 				++p;        /* 滑窗 1 字符继续找下一个字段 */
 			}
-
+#if LINE
+			ir_bits = ~bits;
+#else
 			ir_bits = bits;
+#endif
 		}
 
 	}
