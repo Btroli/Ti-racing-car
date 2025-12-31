@@ -120,8 +120,14 @@ void R1_control(uint16_t motor_speed, uint8_t dir) {
 }
 
 void Motor_Run(float x, float y) {
-	L1_control(x, 0);
-	R1_control(y, 0);
+	if (x > 0)
+		L1_control(x, 0);
+	else
+		L1_control(-x, 1);
+	if (y > 0)
+		R1_control(y, 0);
+	else
+		R1_control(-y, 1);
 }
 
 
@@ -146,6 +152,5 @@ void Motor_Right(float x, float y) {
 	Motor_Stop(1);
 
 }
-
 
 
