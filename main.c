@@ -51,15 +51,15 @@ int main(void) {
 			pid1();
 			Last_ir_bits = ir_bits;
 		} else {
-			sum_PL = 0;
-			sum_PR = 0;
+			// sum_PL = 0;
+			// sum_PR = 0;
 
 			if (Last_ir_bits & LEFT) {
-				GL = -20;
-				GR = 50;
+				GL = -15;
+				GR = 30;
 			} else if (Last_ir_bits & RIGHT) {
-				GL = 50;
-				GR = -20;
+				GL = 30;
+				GR = -15;
 			}
 		}
 
