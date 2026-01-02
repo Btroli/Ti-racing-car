@@ -17,9 +17,11 @@ int16_t PL = 0, PR = 0, pre_PL = 0, pre_PR = 0, sum_PL = 0, sum_PR = 0;
 int8_t GL = 2, GR = 2;
 
 //pid1
-static const int8_t jq[8] = {25, 20, 12, 5, -5, -12, -20, -25};
+static const int8_t jq[8] = {25, 20, 12, 8, -8, -12, -20, -25};
 //volatile float LKp = 5, LKi = 0.025, LKd = 18;
-volatile float LKp = 5, LKi = 0.025, LKd = 12;
+// volatile float LKp = 4.5, LKi = 0, LKd = 18;
+// volatile float LKp =8, LKi = 0, LKd = 18;
+volatile float LKp = 4.2, LKi = 0, LKd = 14;
 int8_t Er, pre_Er;
 int16_t sum_Er, G_temp;
 uint8_t GLR = 40;
@@ -27,13 +29,11 @@ uint8_t GLR = 40;
 //巡线
 uint8_t Last_ir_bits;
 
-//竞速赛
-int8_t beep_num = 0;
-
 void pid0(void);
 void pid1(void);
 
 void loop0(void);
+void loop1(void);
 
 void BEEP(void);
 
@@ -54,54 +54,16 @@ int main(void) {
 	Motor_Stop(0);
 
 	while (!ReadKEY1);
+	// srand(Stime);
+	// set_ALL_RGB_COLOR(rgbColors[rand() % 7]);
+	while (ReadKEY1);
+	Stime = 0;
 
 	while (1) {
-		loop0();
-	}
-}
-
-void rgb_loop(void) {
-	static uint8_t phase = 0;  // 0-255
-
-	uint8_t r = (phase < 128) ? 255 - phase * 2 : 0;
-	uint8_t g = (phase >= 64 && phase < 192) ? 255 - abs(phase - 128) * 2 : 0;
-	uint8_t b = (phase >= 128) ? (phase - 128) * 2 : 0;
-
-	set_ALL_RGB_COLOR((r << 16) | (g << 8) | b);
-	phase++;
-	delay_ms(20);
-}
-
-void beep_loop(void) {
-	if (!ReadKEY2) {
-		while (!ReadKEY2);
-		beep_num++;
-		beep_num = -beep_num;
-	}
-
-	if (beep_num < 0) {
-		beep_num = -beep_num;
-		beep_count = 2 * beep_num;
-	}
-	delay_cycles(800000);
-}
-
-void BEEP(void) {
-	beep_num++;
-	beep_count = 2 * beep_num;
-}
-
-void Stime_loop(void) {
-	if (!ReadKEY2)
-		Stime = 0;
-	if (!ReadKEY3) {
-		char time_str[10];
-		sprintf(time_str, "%03d.%02d s", Stime / 100, Stime % 100);
-		OLED_ClearRF();
-		OLED_ShowString(3, 3, time_str, 12, 1);
-		OLED_Refresh();
-
-		while (1);
+		if (beep_num < 5)
+			loop0();
+		else
+			loop1();
 	}
 }
 
@@ -110,22 +72,25 @@ void loop0(void) {
 	if (ir_bits) {
 		pid1();
 		Last_ir_bits = ir_bits;
-		//if (Last_ir_bits == 0x11111111)
-		//	BEEP();
 	} else {
 		sum_Er = 0;
 		if (Last_ir_bits & LEFT) {
-			GL = -25;
-			GR = 40;
+			GL = -24;
+			GR = 26;
 		} else if (Last_ir_bits & RIGHT) {
-			GL = 40;
-			GR = -25;
+			GL = 26;
+			GR = -24;
 		}
 	}
 
 	pid0();
 
-	delay_cycles(800000 * 5);
+	delay_cycles(800000 * 4);
+}
+
+void loop1(void) {
+	Motor_Stop(1);
+	Stime_loop();
 }
 
 void pid0(void) {
@@ -174,5 +139,17 @@ void pid1(void) {
 
 	GL = (-20 < GL && GL < 70) ? GL : ((GL < 0) ? -20 : 70);
 	GR = (-20 < GR && GR < 70) ? GR : ((GR < 0) ? -20 : 70);
+
+}
+
+void Stime_loop(void) {
+
+	char time_str[10];
+	sprintf(time_str, "%03d.%02d s", Stime / 100, Stime % 100);
+	OLED_ClearRF();
+	OLED_ShowString(3, 3, time_str, 12, 1);
+	OLED_Refresh();
+
+	while (1);
 
 }

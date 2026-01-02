@@ -4,7 +4,7 @@
 #include "AllHeader.h"
 
 extern volatile uint16_t Stime;
-extern volatile int8_t beep_count;
+extern volatile int8_t beep_num;
 
 void Timer_Init(void);
 

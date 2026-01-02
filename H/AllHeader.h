@@ -2,7 +2,8 @@
 #define __ALLHEADER_H_
 
 //LINE 黑线1，白线0
-#define LINE 1
+#define LINE 0
+#define BEEP_KG 1
 #define Motor_Switch 1
 
 #define LEFT	0b00000111

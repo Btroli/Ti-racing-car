@@ -10,7 +10,7 @@ void Timer_20ms_Init(void) {
 }
 
 
-volatile int8_t beep_count = 0;
+volatile int8_t beep_count = 0, beep_num = 0;
 int8_t beep_timecount = 0;
 
 void TIMER_20ms_INST_IRQHandler(void) {
@@ -18,12 +18,19 @@ void TIMER_20ms_INST_IRQHandler(void) {
 		IRDataAnalysis();
 		encoder_update();
 
-		if (beep_count)
+#if BEEP_KG
+		if (beep_count) {
 			if (beep_timecount++ >= 5) {
 				beep_timecount = 0;
 				Buzzer_TOG_state;
 				beep_count--;
 			}
+		} else if (ir_bits == 0b11111111) {
+			beep_num++;
+			beep_count = 2 * beep_num;
+		}
+#endif
+
 	}
 }
 

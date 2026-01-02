@@ -174,13 +174,13 @@ SYSTICK.interruptPriority = "0";
 SYSTICK.period            = 80;
 
 TIMER1.$name              = "TIMER_20ms";
-TIMER1.timerPeriod        = "20 ms";
 TIMER1.timerClkDiv        = 8;
 TIMER1.timerClkPrescale   = 10;
 TIMER1.timerMode          = "PERIODIC";
 TIMER1.interrupts         = ["ZERO"];
 TIMER1.interruptPriority  = "2";
 TIMER1.timerStartTimer    = true;
+TIMER1.timerPeriod        = "20 ms";
 TIMER1.peripheral.$assign = "TIMG6";
 
 TIMER2.$name              = "TIMER_10ms";
