@@ -9,19 +9,38 @@ void Timer_20ms_Init(void) {
 	DL_TimerG_startCounter(TIMER_20ms_INST);
 }
 
-u8 gled_cnt = 0;
-//20ms定时器中断
+
+volatile int8_t beep_count = 0;
+int8_t beep_timecount = 0;
+
 void TIMER_20ms_INST_IRQHandler(void) {
-	//20ms归零中断触发
 	if ( DL_TimerG_getPendingInterrupt(TIMER_20ms_INST) == DL_TIMER_IIDX_ZERO ) {
-		//编码器更新
-		IRDataAnalysis();	//红外光敏
+		IRDataAnalysis();
 		encoder_update();
-		//Motion_Handle(); //小车测速
-		gled_cnt++;
-		if (gled_cnt >= 10) {
-			gled_cnt = 0;
-			DL_GPIO_togglePins(LED_PORT, LED_MCU_PIN);
-		}
+
+		if (beep_count)
+			if (beep_timecount++ >= 5) {
+				beep_timecount = 0;
+				Buzzer_TOG_state;
+				beep_count--;
+			}
 	}
+}
+
+void Timer_10ms_Init(void) {
+	NVIC_ClearPendingIRQ(TIMER_10ms_INST_INT_IRQN);
+	NVIC_EnableIRQ(TIMER_10ms_INST_INT_IRQN);
+	DL_TimerG_startCounter(TIMER_10ms_INST);
+}
+
+volatile uint16_t Stime;
+
+void TIMER_10ms_INST_IRQHandler(void) {
+	if ( DL_TimerG_getPendingInterrupt(TIMER_10ms_INST) == DL_TIMER_IIDX_ZERO )
+		Stime++;
+}
+
+void Timer_Init(void) {
+	Timer_20ms_Init();
+	Timer_10ms_Init();
 }

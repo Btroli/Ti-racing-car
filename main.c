@@ -27,16 +27,27 @@ uint8_t GLR = 40;
 //巡线
 uint8_t Last_ir_bits;
 
+//竞速赛
+int8_t beep_num = 0;
+
 void pid0(void);
 void pid1(void);
+
+void loop0(void);
+
+void BEEP(void);
+
+void Stime_loop(void);
+void beep_loop(void);
+void rgb_loop(void);
+
 int main(void) {
 	SYSCFG_DL_init();
 
 	OLED_SET();
 	Init_Motor_PWM();
 	encoder_init();
-	Timer_20ms_Init();
-
+	Timer_Init();
 	USART_Init();
 
 	uart0_send_string("$0,0,1#");
@@ -45,74 +56,76 @@ int main(void) {
 	while (!ReadKEY1);
 
 	while (1) {
+		loop0();
+	}
+}
 
-		if (ir_bits) {
-			pid1();
-			Last_ir_bits = ir_bits;
-		} else {
-			sum_Er = 0;
-			if (Last_ir_bits & LEFT) {
-				GL = -25;
-				GR = 40;
-			} else if (Last_ir_bits & RIGHT) {
-				GL = 40;
-				GR = -25;
-			}
-		}
+void rgb_loop(void) {
+	static uint8_t phase = 0;  // 0-255
 
-		pid0();
+	uint8_t r = (phase < 128) ? 255 - phase * 2 : 0;
+	uint8_t g = (phase >= 64 && phase < 192) ? 255 - abs(phase - 128) * 2 : 0;
+	uint8_t b = (phase >= 128) ? (phase - 128) * 2 : 0;
 
-		delay_cycles(800000*5);
+	set_ALL_RGB_COLOR((r << 16) | (g << 8) | b);
+	phase++;
+	delay_ms(20);
+}
+
+void beep_loop(void) {
+	if (!ReadKEY2) {
+		while (!ReadKEY2);
+		beep_num++;
+		beep_num = -beep_num;
 	}
 
-	while (0) {
+	if (beep_num < 0) {
+		beep_num = -beep_num;
+		beep_count = 2 * beep_num;
+	}
+	delay_cycles(800000);
+}
 
-		if (ir_bits) {
-			pid1();
-			Last_ir_bits = ir_bits;
-		} else {
-			sum_Er = 0;
-			if (Last_ir_bits & LEFT) {
-				GL = -15;
-				GR = 30;
-			} else if (Last_ir_bits & RIGHT) {
-				GL = 30;
-				GR = -15;
-			}
-		}
+void BEEP(void) {
+	beep_num++;
+	beep_count = 2 * beep_num;
+}
 
-		pid0();
-
-		OLED_ShowString(oled_y, oled_x, "ecd_L", 12, 1);
-		OLED_ShowNum(oled_y, oled_x + 10, ecd_L, 3, 12, 1);
-		OLED_ShowString(oled_y + 40, oled_x, "ecd_R", 12, 1);
-		OLED_ShowNum(oled_y + 40, oled_x + 10, ecd_R, 3, 12, 1);
-		OLED_ShowNum(oled_y, oled_x + 20, SPDL, 3, 12, 1);
-		OLED_ShowNum(oled_y + 40, oled_x + 20, SPDR, 3, 12, 1);
+void Stime_loop(void) {
+	if (!ReadKEY2)
+		Stime = 0;
+	if (!ReadKEY3) {
+		char time_str[10];
+		sprintf(time_str, "%03d.%02d s", Stime / 100, Stime % 100);
+		OLED_ClearRF();
+		OLED_ShowString(3, 3, time_str, 12, 1);
 		OLED_Refresh();
 
-		delay_cycles(800000);
+		while (1);
+	}
+}
+
+void loop0(void) {
+
+	if (ir_bits) {
+		pid1();
+		Last_ir_bits = ir_bits;
+		//if (Last_ir_bits == 0x11111111)
+		//	BEEP();
+	} else {
+		sum_Er = 0;
+		if (Last_ir_bits & LEFT) {
+			GL = -25;
+			GR = 40;
+		} else if (Last_ir_bits & RIGHT) {
+			GL = 40;
+			GR = -25;
+		}
 	}
 
-	while (0) {
+	pid0();
 
-		pid0();
-
-		OLED_ShowString(oled_y, oled_x, "ecd_L", 12, 1);
-		OLED_ShowNum(oled_y, oled_x + 10, ecd_L, 3, 12, 1);
-		OLED_ShowString(oled_y + 40, oled_x, "ecd_R", 12, 1);
-		OLED_ShowNum(oled_y + 40, oled_x + 10, ecd_R, 3, 12, 1);
-		OLED_ShowNum(oled_y, oled_x + 20, SPDL, 3, 12, 1);
-		OLED_ShowNum(oled_y + 40, oled_x + 20, SPDR, 3, 12, 1);
-		OLED_Refresh();
-		//delay_cycles(800000);
-		//delay_cycles(8000000);	//100ms
-	}
-
-	while (0) {
-		Motor_Run(-200, -200);
-		delay_cycles(800000);
-	}
+	delay_cycles(800000 * 5);
 }
 
 void pid0(void) {
