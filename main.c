@@ -10,8 +10,6 @@
 
 int8_t i = 0;
 
-int8_t RL_flag = 0, turn_flag = 0;
-
 //pid0
 int16_t SPDL = 0, SPDR = 0;
 uint8_t Kp = 2, Ki = 3, Kd = 1;
@@ -20,10 +18,11 @@ int8_t GL = 2, GR = 2;
 
 //pid1
 static const int8_t jq[8] = {25, 20, 12, 5, -5, -12, -20, -25};
-volatile float LKp=6, LKi=0, LKd=10;
+//volatile float LKp = 5, LKi = 0.025, LKd = 18;
+volatile float LKp = 5, LKi = 0.025, LKd = 12;
 int8_t Er, pre_Er;
-int16_t sum_Er;
-uint8_t GLR=40;
+int16_t sum_Er, G_temp;
+uint8_t GLR = 40;
 
 //巡线
 uint8_t Last_ir_bits;
@@ -43,7 +42,7 @@ int main(void) {
 	uart0_send_string("$0,0,1#");
 	Motor_Stop(0);
 
-	//while (!ReadKEY1);
+	while (!ReadKEY1);
 
 	while (1) {
 
@@ -51,9 +50,28 @@ int main(void) {
 			pid1();
 			Last_ir_bits = ir_bits;
 		} else {
-			// sum_PL = 0;
-			// sum_PR = 0;
+			sum_Er = 0;
+			if (Last_ir_bits & LEFT) {
+				GL = -25;
+				GR = 40;
+			} else if (Last_ir_bits & RIGHT) {
+				GL = 40;
+				GR = -25;
+			}
+		}
 
+		pid0();
+
+		delay_cycles(800000*5);
+	}
+
+	while (0) {
+
+		if (ir_bits) {
+			pid1();
+			Last_ir_bits = ir_bits;
+		} else {
+			sum_Er = 0;
 			if (Last_ir_bits & LEFT) {
 				GL = -15;
 				GR = 30;
@@ -92,7 +110,7 @@ int main(void) {
 	}
 
 	while (0) {
-		Motor_Run(-200,-200);
+		Motor_Run(-200, -200);
 		delay_cycles(800000);
 	}
 }
@@ -135,11 +153,11 @@ void pid1(void) {
 	if (sum_Er < GLR * 100 && sum_Er > GLR * -100)
 		sum_Er += Er;
 
-	GR = LKp * Er + LKi * sum_Er + LKd * (Er - pre_Er);
-	GR /= 20;
+	G_temp = LKp * Er + LKi * sum_Er + LKd * (Er - pre_Er);
+	G_temp /= 20;
 
-	GL = GLR + GR;
-	GR = GLR - GR;
+	GL = GLR + G_temp;
+	GR = GLR - G_temp;
 
 	GL = (-20 < GL && GL < 70) ? GL : ((GL < 0) ? -20 : 70);
 	GR = (-20 < GR && GR < 70) ? GR : ((GR < 0) ? -20 : 70);
