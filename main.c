@@ -21,7 +21,9 @@ static const int8_t jq[8] = {25, 20, 12, 8, -8, -12, -20, -25};
 //volatile float LKp = 5, LKi = 0.025, LKd = 18;
 // volatile float LKp = 4.5, LKi = 0, LKd = 18;
 // volatile float LKp =8, LKi = 0, LKd = 18;
-volatile float LKp = 4.2, LKi = 0, LKd = 14;
+// volatile float LKp = 4.2, LKi = 0, LKd = 14;
+volatile float LKp = 5.3, LKi = 0, LKd = 16.6;
+// volatile float LKp = 5.3, LKi = 0, LKd = 24.6;
 int8_t Er, pre_Er;
 int16_t sum_Er, G_temp;
 uint8_t GLR = 40;
@@ -41,6 +43,20 @@ void Stime_loop(void);
 void beep_loop(void);
 void rgb_loop(void);
 
+void Timer_pid_Init(void) {
+	NVIC_ClearPendingIRQ(TIMER_pid_INST_INT_IRQN);
+	NVIC_EnableIRQ(TIMER_pid_INST_INT_IRQN);
+	DL_TimerG_startCounter(TIMER_pid_INST);
+}
+
+void TIMER_pid_INST_IRQHandler(void) {
+	if ( DL_TimerG_getPendingInterrupt(TIMER_pid_INST) == DL_TIMER_IIDX_ZERO )
+		if (beep_num < 5)
+			loop0();
+		else
+			loop1();
+}
+
 int main(void) {
 	SYSCFG_DL_init();
 
@@ -57,9 +73,12 @@ int main(void) {
 	// srand(Stime);
 	// set_ALL_RGB_COLOR(rgbColors[rand() % 7]);
 	while (ReadKEY1);
+	Timer_pid_Init();
 	Stime = 0;
 
-	while (1) {
+	while(1);
+
+	while (0) {
 		if (beep_num < 5)
 			loop0();
 		else
@@ -71,21 +90,20 @@ void loop0(void) {
 
 	if (ir_bits) {
 		pid1();
+		if (((ir_bits&15)==15)||((ir_bits&240)==240))
 		Last_ir_bits = ir_bits;
 	} else {
 		sum_Er = 0;
 		if (Last_ir_bits & LEFT) {
 			GL = -24;
-			GR = 26;
+			GR = 32;
 		} else if (Last_ir_bits & RIGHT) {
-			GL = 26;
+			GL = 32;
 			GR = -24;
 		}
 	}
 
 	pid0();
-
-	delay_cycles(800000 * 4);
 }
 
 void loop1(void) {
