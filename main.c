@@ -25,12 +25,12 @@ static const int8_t jq[8] = {15, 20, 12, 8, -8, -12, -20, -15};
 // volatile float LKp =8, LKi = 0, LKd = 18;
 // volatile float LKp = 4.2, LKi = 0, LKd = 14;
 // volatile float LKp = 3.7, LKi = 0, LKd = 16.6;
-volatile float LKp = 4.7, LKi = 0, LKd = 15.9;
+volatile float LKp = 4.1, LKi = 0, LKd = 15.9;
 
 // volatile float LKp = 5.3, LKi = 0, LKd = 24.6;
 int8_t Er, pre_Er;
 int16_t sum_Er, G_temp;
-uint8_t GLR = 40;
+uint8_t GLR = 46;
 
 //巡线
 uint8_t Last_ir_bits;
