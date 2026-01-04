@@ -10,19 +10,23 @@
 
 int8_t i = 0;
 
+unsigned int rgbN=0;
+
 //pid0
 int16_t SPDL = 0, SPDR = 0;
 uint8_t Kp = 2, Ki = 3, Kd = 1;
 int16_t PL = 0, PR = 0, pre_PL = 0, pre_PR = 0, sum_PL = 0, sum_PR = 0;
-int8_t GL = 2, GR = 2;
+int8_t GL = 0, GR = 0;
 
 //pid1
-static const int8_t jq[8] = {25, 20, 12, 8, -8, -12, -20, -25};
+static const int8_t jq[8] = {15, 20, 12, 8, -8, -12, -20, -15};
 //volatile float LKp = 5, LKi = 0.025, LKd = 18;
 // volatile float LKp = 4.5, LKi = 0, LKd = 18;
 // volatile float LKp =8, LKi = 0, LKd = 18;
 // volatile float LKp = 4.2, LKi = 0, LKd = 14;
-volatile float LKp = 5.3, LKi = 0, LKd = 16.6;
+// volatile float LKp = 3.7, LKi = 0, LKd = 16.6;
+volatile float LKp = 4.7, LKi = 0, LKd = 15.9;
+
 // volatile float LKp = 5.3, LKi = 0, LKd = 24.6;
 int8_t Er, pre_Er;
 int16_t sum_Er, G_temp;
@@ -55,6 +59,9 @@ void TIMER_pid_INST_IRQHandler(void) {
 			loop0();
 		else
 			loop1();
+
+		if (rgbN++%25==0)
+			set_ALL_RGB_COLOR(rgbColors[rand() % 7]);
 }
 
 int main(void) {
@@ -70,8 +77,8 @@ int main(void) {
 	Motor_Stop(0);
 
 	while (!ReadKEY1);
-	// srand(Stime);
-	// set_ALL_RGB_COLOR(rgbColors[rand() % 7]);
+	srand(Stime);
+	set_ALL_RGB_COLOR(rgbColors[rand() % 7]);
 	while (ReadKEY1);
 	Timer_pid_Init();
 	Stime = 0;
@@ -91,15 +98,15 @@ void loop0(void) {
 	if (ir_bits) {
 		pid1();
 		if (((ir_bits&15)==15)||((ir_bits&240)==240))
-		Last_ir_bits = ir_bits;
+			Last_ir_bits = ir_bits;
 	} else {
 		sum_Er = 0;
 		if (Last_ir_bits & LEFT) {
-			GL = -24;
-			GR = 32;
+			GL = -30;
+			GR = 30;
 		} else if (Last_ir_bits & RIGHT) {
-			GL = 32;
-			GR = -24;
+			GL = 30;
+			GR = -30;
 		}
 	}
 
@@ -168,6 +175,9 @@ void Stime_loop(void) {
 	OLED_ShowString(3, 3, time_str, 12, 1);
 	OLED_Refresh();
 
-	while (1);
+	while (1) {
+		set_ALL_RGB_COLOR(rgbColors[rand() % 7]);
+		delay_ms(500);
+	}
 
 }
