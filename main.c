@@ -25,7 +25,8 @@ static const int8_t jq[8] = {15, 20, 12, 8, -8, -12, -20, -15};
 // volatile float LKp =8, LKi = 0, LKd = 18;
 // volatile float LKp = 4.2, LKi = 0, LKd = 14;
 // volatile float LKp = 3.7, LKi = 0, LKd = 16.6;
-volatile float LKp = 4.1, LKi = 0, LKd = 15.9;
+//volatile float LKp = 5.3, LKi = 0, LKd = 16.7;
+volatile float LKp = 6.5, LKi = 0, LKd = 22;
 
 // volatile float LKp = 5.3, LKi = 0, LKd = 24.6;
 int8_t Er, pre_Er;
@@ -102,11 +103,11 @@ void loop0(void) {
 	} else {
 		sum_Er = 0;
 		if (Last_ir_bits & LEFT) {
-			GL = -30;
-			GR = 30;
+			GL = -26;
+			GR = 34;
 		} else if (Last_ir_bits & RIGHT) {
-			GL = 30;
-			GR = -30;
+			GL = 26;
+			GR = -24;
 		}
 	}
 
